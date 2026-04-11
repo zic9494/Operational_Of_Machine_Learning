@@ -1,0 +1,30 @@
+# Garments Worker Productivity Dataset
+
+## Dataset Overview
+This dataset contains productivity-related records from a garment manufacturing environment.  
+It can be used for regression or classification tasks to analyze and predict worker/team productivity.
+
+- Total records: 1197
+- Total columns: 15
+- Target column: `actual_productivity`
+
+## Column Description
+
+| Column Name | Data Type | Description |
+|---|---|---|
+| `date` | Date / String | The date of the record in MM-DD-YYYY format. |
+| `quarter` | Categorical | A portion of the month. Each month is divided into five quarters. |
+| `department` | Categorical | The department associated with the instance, mainly `sewing` or `finishing`. |
+| `day` | Categorical | Day of the week for the record. |
+| `team` | Integer | Team number associated with the productivity record. |
+| `targeted_productivity` | Float | The target productivity level set by the authority, usually ranging from 0 to 1. |
+| `smv` | Float | Standard Minute Value, which represents the allocated time for a task. |
+| `wip` | Integer / Float | Work in progress. Refers to the number of unfinished items for products in the sewing line. |
+| `over_time` | Integer | Amount of overtime by the team in minutes. |
+| `incentive` | Integer / Float | The amount of financial incentive provided to motivate workers. |
+| `idle_time` | Float | The amount of time when production was interrupted or workers were idle. |
+| `idle_men` | Integer | Number of workers who were idle due to production interruption. |
+| `no_of_style_change` | Integer | Number of style changes in the production line. |
+| `no_of_workers` | Float | Number of workers in the team. |
+| `actual_productivity` | Float | The actual productivity delivered by the workers. This is usually the target variable. |
+
