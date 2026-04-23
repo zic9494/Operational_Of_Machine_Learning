@@ -13,7 +13,7 @@ def run(df :DataFrame):
     print("Miss values:\n", missvalues)
     print("Miss values percentage:\n", missing_percentage)
 
-    os.makedirs("Charts", exist_ok=True)
+    os.makedirs("charts", exist_ok=True)
     
     numerical_features = df.select_dtypes(include="number")
     print("\nNumerical Feature Statistics:\n",numerical_features.describe())
@@ -21,7 +21,7 @@ def run(df :DataFrame):
     numerical_features.hist(figsize=(14, 10), bins=20, edgecolor="black")
     plt.suptitle("Histograms of Numerical Features")
     plt.tight_layout()
-    output_path = "Charts/numerical_histograms.png"
+    output_path = "charts/numerical_histograms.png"
     plt.savefig(output_path, dpi=150)
     print(f"\nHistogram image saved to: {output_path}")
 
@@ -62,7 +62,7 @@ def run(df :DataFrame):
 
         fig.suptitle("Selected Features Boxplots (Log X-axis)")
         fig.tight_layout()
-        log_output_path = "Charts/selected_log_boxplots.png"
+        log_output_path = "charts/selected_log_boxplots.png"
         fig.savefig(log_output_path, dpi=150)
         print(f"Log-scale boxplot image saved to: {log_output_path}")
 
@@ -83,7 +83,7 @@ def run(df :DataFrame):
     ax.set_title("Correlation Heatmap (Numerical Columns)")
     fig.colorbar(heatmap, ax=ax, fraction=0.046, pad=0.04, label="Correlation")
     fig.tight_layout()
-    heatmap_output_path = "Charts/numerical_cols_heatmap.png"
+    heatmap_output_path = "charts/numerical_cols_heatmap.png"
     fig.savefig(heatmap_output_path, dpi=150)
     print(f"Correlation heatmap saved to: {heatmap_output_path}")
 
