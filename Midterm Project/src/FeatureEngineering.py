@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.model_selection import train_test_split
 # 1. Solve the outlier issue in `incentive`
 # 2. Keep `wip` only in the sewing department
-# 3. Delete `date`
+# 3. Delete `date`, `idle_time`, `idle_men`, `no_of_style_change`
 # 4. Encode `day` and `department`
 # 5. Handle the high correlation between `no_of_worker` and `smv`
 
@@ -20,7 +20,7 @@ def run(
         raise KeyError(f"Target column '{target_col}' not found in dataframe.")
 
     # delete outliner in `incentive`
-    incentive_q95 = df["incentive"].quantile(0.95)
+    incentive_q95 = df["incentive"].quantile(0.97)
     df = df[df["incentive"] <= incentive_q95].copy()
 
     # notice that the data has two type one is work hard to get incentive and the other is not to get incentive
@@ -47,8 +47,7 @@ def run(
         df = df.drop(columns=["wip"])
 
     
-    if "date" in df.columns:
-        df = df.drop(columns=["date"])
+    df = df.drop(columns=["date", "idle_time", "idle_men", "no_of_style_change"])
 
     # one hot encoding
     categorical_cols = [col for col in ["day", "department"] if col in df.columns]
