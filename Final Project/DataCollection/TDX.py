@@ -1,6 +1,15 @@
 from dotenv import load_dotenv
 import os, requests, json
 from pathlib import Path
+from datetime import datetime
+
+class Park():
+    def __init__(self):
+        self.ParkId = None
+        self.TotalSpaces = None
+        self.AvailableSpaces = None
+        self.FullStatus = None
+        self.time = None
 
 class TDX():
     def __init__(self):
@@ -9,6 +18,9 @@ class TDX():
         self.__ApiKey = os.getenv("TDX_KEY")
         self.token = None
         self.auth()
+        self.response = None
+        self.parks = []
+        
 
     def auth(self):
         url = 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token'
@@ -25,6 +37,7 @@ class TDX():
 
 
     def getParkSpace(self, City="Taipei",test=False):
+        
         url = 'https://tdx.transportdata.tw/api/basic/v1/Parking/OffStreet/ParkingAvailability/City/' + City
         params = {
             'top':1000,
@@ -34,15 +47,26 @@ class TDX():
             'authorization': 'Bearer ' + self.token,
             'Accept-Encoding': 'gzip'
         }
-        if not test:   
-            self.auth()
-            response = requests.get(url, params=params, headers=header).json()
+
+        if not test:
+            self.response = requests.get(url, params=params, headers=header).json()
         else:
-            file_path = Path(__file__).parent / 'response_1779770296253.json'
+            file_path = Path(__file__).parent / 'response_1779784573186.json'
             with open(file_path, 'r', encoding='utf-8') as file:
-                response = json.load(file)
+                self.response = json.load(file)
+        
+        self.handelParkData()
 
-
+    def handelParkData(self):
+        datas = self.response['ParkingAvailabilities']
+        for i in datas:
+            temp = Park()
+            temp.ParkId = i['CarParkID']
+            temp.TotalSpaces = int(i['TotalSpaces'])
+            temp.AvailableSpaces = int(i['AvailableSpaces'])
+            temp.FullStatus = int(i['FullStatus'])
+            temp.time = datetime.fromisoformat(i['DataCollectTime'])
+            self.parks.append(temp)
         
             
         
@@ -50,4 +74,6 @@ class TDX():
 
 if __name__ == "__main__":
     peko = TDX()
-    peko.getParkSpace(test=True)
+    peko.getParkSpace(test=False)
+    for i in peko.parks:
+        print(i.ParkId)
