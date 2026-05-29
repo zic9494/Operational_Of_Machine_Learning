@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
-import os, requests, json
+import os, requests, json, logging
 from pathlib import Path
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
 class Park():
     def __init__(self):
         self.ParkId = None
@@ -43,9 +44,17 @@ class TDX():
             'client_id' : self.__ApiId,
             'client_secret' : self.__ApiKey
         }
-        response = requests.post(url, headers=headers, data=data).json()
-        self.token = response['access_token']
-
+        try:
+            logger.info("TDX auth request start")
+            response = requests.post(url, headers=headers, data=data)
+            response.raise_for_status()
+        except requests.RequestException:
+            logger.exception("TDX auth request failed")
+            raise
+        
+        token_data = response.json()
+        self.token = token_data['access_token']
+        logger.info("TDX auth request finished")
 
     def getParkSpace(self, City="Taipei",test=False):
         
@@ -60,14 +69,22 @@ class TDX():
         }
 
         if not test:
-            response = requests.get(url, params=params, headers=header)
-            
-            if response.status_code == 401:
-                self.auth()
-                header["authorization"] = "Bearer " + self.token
+            try:
+                logger.info("TDX data request start")
                 response = requests.get(url, params=params, headers=header)
+                
+                if response.status_code == 401:
+                    logger.warning("TDX token expired, refreshing token")
+                    self.auth()
+                    header["authorization"] = "Bearer " + self.token
+                    response = requests.get(url, params=params, headers=header)
 
-            self.response = response.json()
+                self.response = response.json()
+                response.raise_for_status()
+                logger.info("TDX data request end")
+            except requests.RequestException:
+                logger.exception("TDX parking request failed")
+                raise
                 
         else:
             file_path = Path(__file__).parent / 'response_1779784573186.json'

@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
-import os, requests
+import os, requests, logging
 
+logger = logging.getLogger(__name__)
 class CWA():
     def __init__(self):
         load_dotenv()
@@ -21,17 +22,23 @@ class CWA():
             "StationId":StationId,
             "StationName":StationName
         }
-        response = requests.get(url, params=params)
         
+        logger.info("CWA request start")
+        try:
+            response = requests.get(url, params=params, timeout=10)
+        except requests.RequestException:
+            logger.exception("CWA network request failed")
+            raise
+
         if response.status_code != 200:
-            if response.status_code == 401:
-                print("API key not work")
+            logger.error("CWA request failed | status_code=%s", response.status_code)
             response.raise_for_status()
         
         data = response.json()
         record = data['records']['Station'][0]['RainfallElement']
         for i, v in enumerate(self.Tags):
             self.RainData[i] = float(record[v]['Precipitation'])
+        logger.info("CWA request finished")
 
 if __name__ == "__main__":
     peko = CWA()

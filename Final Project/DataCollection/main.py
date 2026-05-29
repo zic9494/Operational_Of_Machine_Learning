@@ -1,10 +1,13 @@
 from datetime import datetime
 from pathlib import Path
 import csv
+import logging
 
 from CWA import CWA
 from TDX import TDX
 from Holiday import Holiday
+from logger_config import setup_logging
+
 
 DATASET_DIR = Path(__file__).resolve().parents[1] / "Datasets"
 CSV_PATH = DATASET_DIR / "ParkingRemainDataset.csv"
@@ -25,6 +28,7 @@ FIELDNAMES = [
     "RainPast24hr",
 ]
 
+logger = logging.getLogger(__name__)
 
 def append_rows(rows):
     file_is_empty = not CSV_PATH.exists() or CSV_PATH.stat().st_size == 0
@@ -71,6 +75,6 @@ def hourly():
     append_rows(rows)
     print(f"Inserted {len(rows)} rows into {CSV_PATH}")
 
-
+setup_logging()
 DATASET_DIR.mkdir(exist_ok=True)
 hourly()
