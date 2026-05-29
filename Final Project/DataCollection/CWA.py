@@ -8,6 +8,12 @@ class CWA():
         self.RainData = [None for i in range(6)]
         self.Tags = ['Now', 'Past10Min', 'Past1hr', 'Past3hr', 'Past12hr', 'Past24hr']
     
+    def to_dict(self):
+        return {
+            tag: rain
+            for tag, rain in zip(self.Tags, self.RainData)
+        }
+    
     def get_rain(self, StationId="466920", StationName="臺北"):
         url = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0002-001'
         params = {

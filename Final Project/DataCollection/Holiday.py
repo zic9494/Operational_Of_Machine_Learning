@@ -18,9 +18,9 @@ class Holiday:
                 if Today.date() == Date_obj:
                     match int(row_date[2]) :    
                         case 0:
-                            return False
+                            return 0
                         case 2:
-                            return True
+                            return 1
 
 if __name__ == "__main__":
     peko = Holiday()

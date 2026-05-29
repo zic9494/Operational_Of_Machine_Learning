@@ -1,2 +1,3 @@
 DataCollection/.env
 DataCollection/response_*.json
+*.pyc

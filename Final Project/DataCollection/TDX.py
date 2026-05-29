@@ -10,6 +10,15 @@ class Park():
         self.AvailableSpaces = None
         self.FullStatus = None
         self.time = None
+    
+    def to_dict(self):
+        return {
+            "ParkId": self.ParkId,
+            "TotalSpaces": self.TotalSpaces,
+            "AvailableSpaces": self.AvailableSpaces,
+            "FullStatus": self.FullStatus,
+            "time": self.time.isoformat() if self.time else None,
+        }
 
 class TDX():
     def __init__(self):
@@ -20,7 +29,9 @@ class TDX():
         self.auth()
         self.response = None
         self.parks = []
-        
+    
+    def to_dict(self):
+        return [park.to_dict() for park in self.parks]
 
     def auth(self):
         url = 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token'
@@ -49,7 +60,15 @@ class TDX():
         }
 
         if not test:
-            self.response = requests.get(url, params=params, headers=header).json()
+            response = requests.get(url, params=params, headers=header)
+            
+            if response.status_code == 401:
+                self.auth()
+                header["authorization"] = "Bearer " + self.token
+                response = requests.get(url, params=params, headers=header)
+
+            self.response = response.json()
+                
         else:
             file_path = Path(__file__).parent / 'response_1779784573186.json'
             with open(file_path, 'r', encoding='utf-8') as file:
