@@ -51,7 +51,7 @@ def hourly():
     cwa_data = cwa.to_dict()
 
     tdx = TDX()
-    tdx.getParkSpace(test=True)
+    tdx.getParkSpace()
     tdx_data = tdx.to_dict()
 
     rows = []

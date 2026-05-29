@@ -1,3 +1,5 @@
 DataCollection/.env
 DataCollection/response_*.json
 *.pyc
+*.log
+Datasets/ParkingRemainDataset.csv
